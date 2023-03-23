@@ -5,8 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import ru.borun.freedomnet.common.Config;
 
+import java.io.IOException;
+
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class JenkinsConfig extends Config {
@@ -30,14 +35,19 @@ public class JenkinsConfig extends Config {
         private String token;
     }
 
+    @SneakyThrows(IOException.class)
     public static JenkinsConfig getInstance() {
         if (INSTANCE != null) {
             return INSTANCE;
         } else {
+            log.info("Getting Jenkins config...");
             var configMap = readConfigMap("config.yaml", "jenkins");
             if (configMap.isPresent()) {
-                return new ObjectMapper().convertValue(configMap.get(), JenkinsConfig.class);
+                var config = new ObjectMapper().convertValue(configMap.get(), JenkinsConfig.class);
+                log.info("Jenkins config gotten.");
+                return config;
             } else {
+                log.warn("Jenkins config is empty.");
                 return new JenkinsConfig();
             }
         }
