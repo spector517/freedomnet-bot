@@ -1,11 +1,13 @@
 package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Log4j2
 public class BuildService implements Runnable {
 
     private static final BuildService buildService = getInstance();
@@ -24,6 +26,7 @@ public class BuildService implements Runnable {
     }
 
     public void addBuildToProcessing(Build build) {
+        log.info("Add build for client ({}) to processing", build.getClientData().getClientId());
         processingBuilds.add(build);
     }
 
@@ -32,6 +35,7 @@ public class BuildService implements Runnable {
     }
 
     public void stop() {
+        log.info("Stopping build service...");
         stopped = true;
     }
 
@@ -39,6 +43,7 @@ public class BuildService implements Runnable {
     @Override
     public void run() {
         while (!stopped) {
+            log.debug("Sleeping for {} sec", jenkinsConfig.getPollingInterval() / 1000);
             Thread.sleep(jenkinsConfig.getPollingInterval());
             var build = processingBuilds.poll();
             if (build == null) {
@@ -49,7 +54,9 @@ public class BuildService implements Runnable {
                 processingBuilds.add(build);
             } else {
                 finishedBuilds.add(build);
+                log.info("Build for client ({}) processed.", build.getClientData().getClientId());
             }
         }
+        log.info("Build service stopped.");
     }
 }
