@@ -13,21 +13,24 @@ import java.util.Optional;
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Config {
-    protected static Optional<Object> readConfigMap(String resourcePath, String prefix) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+    public static Optional<Object> readConfigMap(String resourcePath, String prefix) throws IOException {
+        var objectMapper = new ObjectMapper(new YAMLFactory());
         var inputStream = Config.class.getClassLoader().getResourceAsStream(resourcePath);
         try {
             if (inputStream == null) {
                 throw new IOException(String.format("The input stream of resource '%s' is null", resourcePath));
             } else {
-                var result = Optional.of(objectMapper.readValue(inputStream, Map.class).get(prefix));
-                inputStream.close();
-                log.debug("Config '{}' deserialized into Map.class", resourcePath);
-                return result;
+                var fullMap = objectMapper.readValue(inputStream, Map.class);
+                if (!fullMap.containsKey(prefix)) {
+                    return Optional.empty();
+                } else {
+                    log.debug("Config '{}' deserialized into Map.class", resourcePath);
+                    return Optional.of(fullMap.get(prefix));
+                }
             }
         } catch (IOException exception) {
             log.fatal("Config deserialization error.");
-            log.fatal(exception.getMessage());
+            log.fatal(exception);
             throw exception;
         }
     }
