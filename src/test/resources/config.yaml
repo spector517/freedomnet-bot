@@ -10,6 +10,9 @@ jenkins:
   openvpn_deploy_job:
     uri: /job/freedomnet/job/openvpn_deploy
     token: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+  wireguard_deploy_job:
+    uri: /job/freedomnet/job/wireguard_deploy
+    token: c8c175133f654ba776c0a72327fa8410bc7546437eca2948bc67f06311980429
 
 bot:
   token: 7777777777:AAGf5f023e7dab6955c8ed90fc1b0f53416

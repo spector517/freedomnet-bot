@@ -19,15 +19,12 @@ public class JenkinsConfig extends Config {
     private String url;
     private String username;
     private String token;
-    @JsonProperty(value = "proxy_deploy_job")
-    private Job proxyDeployJob;
-    @JsonProperty(value = "openvpn_deploy_job")
-    private Job openvpnDeployJob;
-    @JsonProperty(value = "polling_interval")
-    private long pollingInterval;
+    @JsonProperty(value = "proxy_deploy_job") private Job proxyDeployJob;
+    @JsonProperty(value = "openvpn_deploy_job") private Job openvpnDeployJob;
+    @JsonProperty(value = "wireguard_deploy_job") private Job wireguardDeployJob;
 
-    @JsonProperty(value = "waiting_build_max_timeout")
-    private long waitingBuildMaxTimeout;
+    @JsonProperty(value = "polling_interval") private long pollingInterval;
+    @JsonProperty(value = "waiting_build_max_timeout") private long waitingBuildMaxTimeout;
 
     @Getter
     @EqualsAndHashCode
