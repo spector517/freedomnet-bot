@@ -1,9 +1,13 @@
 package ru.borun.freedomnet.util.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.http.client.utils.URIBuilder;
 
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -65,10 +69,9 @@ public class HttpSender {
 
     private void processQueryParams(HttpRequest.Builder requestBuilder) {
         if (queryParams != null && queryParams.size() > 0) {
-            var queryParamsStr = queryParams.keySet().stream().map(key ->
-                    String.format("%s=%s", key, queryParams.get(key))
-            ).toList();
-            var uri = URI.create(String.format("%s?%s", url, String.join("&", queryParamsStr)));
+            var uriBuilder = UriBuilder.fromUri(url);
+            queryParams.forEach(uriBuilder::queryParam);
+            var uri = uriBuilder.build();
             log.debug("Setup URI to {}", uri);
             requestBuilder.uri(uri);
         } else {
@@ -116,7 +119,7 @@ public class HttpSender {
         if (!validResponseCodes.contains(response.statusCode())) {
             var responseBodyStr = new String(response.body(), StandardCharsets.UTF_8);
             log.error("Invalid response code: {}", response.statusCode());
-            log.debug("Response body: {}", responseBodyStr);
+            log.error("Response body: {}", responseBodyStr);
             throw new InvalidHttpStatusCode(response.statusCode(), responseBodyStr);
         } else {
             log.debug("Response code is {}", response.statusCode());
