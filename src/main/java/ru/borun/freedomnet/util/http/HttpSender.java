@@ -1,4 +1,4 @@
-package ru.borun.freedomnet.http;
+package ru.borun.freedomnet.util.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -17,12 +17,12 @@ import java.util.Map;
 @Builder(builderMethodName = "newHttpSender")
 public class HttpSender {
 
-    private static final List<Integer> VALID_RESPONSE_CODES = List.of(200, 201, 201, 203, 204);
+    public static final List<Integer> VALID_RESPONSE_CODES = List.of(200, 201, 201, 203, 204);
     private String auth;
     private String url;
     private Map<String, String> headers;
     private Map<String, String> queryParams;
-    private HttpMethod method;
+    private HttpMethods method;
     private byte[] requestBody;
 
     public <T> T sendRequest(Class<T> bodyType)
@@ -48,53 +48,71 @@ public class HttpSender {
 
     public byte[] sendRequest(List<Integer> validResponseCodes)
             throws IOException, InterruptedException, InvalidHttpStatusCode {
-
         log.debug("Starting HttpRequest building...");
-        var request = HttpRequest.newBuilder();
+        var requestBuilder = HttpRequest.newBuilder();
+        processQueryParams(requestBuilder);
+        processMethod(requestBuilder);
+        processHeaders(requestBuilder);
+        processAuth(requestBuilder);
 
+        log.debug("Valid response codes: {}", validResponseCodes);
+        log.debug("Sending request...");
+        var response = HttpClient.newHttpClient().send(requestBuilder.build(), HttpResponse.BodyHandlers.ofByteArray());
+        log.debug("Response received.");
+
+        return processResponse(validResponseCodes, response);
+    }
+
+    private void processQueryParams(HttpRequest.Builder requestBuilder) {
         if (queryParams != null && queryParams.size() > 0) {
             var queryParamsStr = queryParams.keySet().stream().map(key ->
                     String.format("%s=%s", key, queryParams.get(key))
             ).toList();
             var uri = URI.create(String.format("%s?%s", url, String.join("&", queryParamsStr)));
             log.debug("Setup URI to {}", uri);
-            request.uri(uri);
+            requestBuilder.uri(uri);
         } else {
             var uri = URI.create(url);
             log.debug("Setup URI to {}", uri);
-            request.uri(uri);
+            requestBuilder.uri(uri);
         }
+    }
 
+    private void processMethod(HttpRequest.Builder requestBuilder) {
         if (method != null) {
-            if (method == HttpMethod.GET) {
+            if (method == HttpMethods.GET) {
                 log.debug("Setup HTTP method to 'GET'");
-                request.GET();
-            } else if (method == HttpMethod.POST) {
+                requestBuilder.GET();
+            } else if (method == HttpMethods.POST) {
                 log.debug("Setup HTTP method to 'POST'");
-                request.POST(HttpRequest.BodyPublishers.ofByteArray(requestBody));
+                requestBuilder.POST(HttpRequest.BodyPublishers.ofByteArray(requestBody));
             }
         } else {
             log.debug("The method parameter is null, using default HTTP method 'GET'");
-            request.GET();
+            requestBuilder.GET();
         }
+    }
 
+    private void processHeaders(HttpRequest.Builder requestBuilder) {
         if (headers != null) {
             log.debug("Headers: {}", headers);
-            headers.keySet().forEach(key -> request.header(key, headers.get(key)));
+            headers.keySet().forEach(key -> requestBuilder.header(key, headers.get(key)));
         } else {
             log.debug("There are no custom headers");
         }
+    }
 
+    private void processAuth(HttpRequest.Builder requestBuilder) {
         if (auth != null) {
             log.debug("Setup Authorization header to {}", auth);
-            request.header("Authorization", auth);
+            requestBuilder.header("Authorization", auth);
         } else {
             log.debug("There are no authorization");
         }
-        log.debug("Valid response codes: {}", validResponseCodes);
-        log.debug("Sending request...");
-        var response = HttpClient.newHttpClient().send(request.build(), HttpResponse.BodyHandlers.ofByteArray());
-        log.debug("Response received.");
+    }
+
+    private byte[] processResponse(List<Integer> validResponseCodes, HttpResponse<byte[]> response)
+            throws InvalidHttpStatusCode {
         if (!validResponseCodes.contains(response.statusCode())) {
             var responseBodyStr = new String(response.body(), StandardCharsets.UTF_8);
             log.error("Invalid response code: {}", response.statusCode());

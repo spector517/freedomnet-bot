@@ -3,26 +3,23 @@ package ru.borun.freedomnet.jenkins;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Log4j2
 public class BuildService implements Runnable {
 
-    private static final BuildService buildService = getInstance();
-    public static BuildService getInstance() {
-        return Objects.requireNonNullElseGet(buildService, BuildService::new);
-    }
     private final Queue<Build> processingBuilds;
     private final Queue<Build> finishedBuilds;
     private final JenkinsConfig jenkinsConfig;
+    private final JenkinsAdapter jenkinsAdapter;
     private boolean stopped;
 
-    private BuildService() {
+    public BuildService(JenkinsConfig jenkinsConfig) {
         processingBuilds = new ConcurrentLinkedQueue<>();
         finishedBuilds = new ConcurrentLinkedQueue<>();
-        jenkinsConfig = JenkinsConfig.getInstance();
+        jenkinsAdapter = new JenkinsAdapter(jenkinsConfig);
+        this.jenkinsConfig = jenkinsConfig;
     }
 
     public void addBuildToProcessing(Build build) {
@@ -49,7 +46,7 @@ public class BuildService implements Runnable {
             if (build == null) {
                 continue;
             }
-            build.update();
+            build.setBuildData(jenkinsAdapter.updateBuild(build.getBuildData()));
             if (build.getBuildData().getResult() == null) {
                 processingBuilds.add(build);
             } else {

@@ -1,4 +1,4 @@
-package ru.borun.freedomnet.http;
+package ru.borun.freedomnet.util.http;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
