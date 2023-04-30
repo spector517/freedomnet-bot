@@ -18,7 +18,7 @@ public class Config {
         var inputStream = Config.class.getClassLoader().getResourceAsStream(resourcePath);
         try {
             if (inputStream == null) {
-                throw new IOException(String.format("The input stream of resource '%s' is null", resourcePath));
+                throw new IOException("The input stream of resource '%s' is null".formatted(resourcePath));
             } else {
                 var fullMap = objectMapper.readValue(inputStream, Map.class);
                 if (!fullMap.containsKey(prefix)) {

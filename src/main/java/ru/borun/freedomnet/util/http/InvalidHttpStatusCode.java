@@ -12,6 +12,6 @@ public class InvalidHttpStatusCode extends Exception {
 
     @Override
     public String toString() {
-        return String.format("Invalid status code: %d%n%s", statusCode, body);
+        return "Invalid status code: %d%n%s".formatted(statusCode, body);
     }
 }

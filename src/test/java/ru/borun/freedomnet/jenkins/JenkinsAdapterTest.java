@@ -48,7 +48,7 @@ class JenkinsAdapterTest {
     void testGetJobData() {
         assert jenkinsConfig != null;
         var jobUri = "test/job/uri";
-        var expectedUrl = String.format("%s/%s/api/json", jenkinsConfig.getUrl(), jobUri);
+        var expectedUrl = "%s/%s/api/json".formatted(jenkinsConfig.getUrl(), jobUri);
 
         try (var staticHttpSender = mockStatic(HttpSender.class)) {
             staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
@@ -69,7 +69,7 @@ class JenkinsAdapterTest {
         var jobUri = "test/job/uri";
         var token = "secret_token";
         var params = Map.of("p1", "v1", "p2", "v2", "token", token);
-        var expectedUrl = String.format("%s/%s/buildWithParameters", jenkinsConfig.getUrl(), jobUri);
+        var expectedUrl = "%s/%s/buildWithParameters".formatted(jenkinsConfig.getUrl(), jobUri);
         try (var staticHttpSender = mockStatic(HttpSender.class)) {
             staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
             when(httpSenderBuilder.build()).thenReturn(httpSender);
@@ -89,7 +89,7 @@ class JenkinsAdapterTest {
         assert jenkinsConfig != null;
         var buildData = new BuildData();
         buildData.setUrl("http://joburl");
-        var expectedUrl = String.format("%s/api/json", buildData.getUrl());
+        var expectedUrl = "%s/api/json".formatted(buildData.getUrl());
         try (var staticHttpSender = mockStatic(HttpSender.class)) {
             staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
             when(httpSenderBuilder.build()).thenReturn(httpSender);
@@ -108,7 +108,7 @@ class JenkinsAdapterTest {
         assert jenkinsConfig != null;
         var jobUri = "test/job/uri";
         var buildNumber = 13;
-        var expectedUrl = String.format("%s/%s/%d/api/json", jenkinsConfig.getUrl(), jobUri, buildNumber);
+        var expectedUrl = "%s/%s/%d/api/json".formatted(jenkinsConfig.getUrl(), jobUri, buildNumber);
         try (var staticHttpSender = mockStatic(HttpSender.class)) {
             staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
             when(httpSenderBuilder.build()).thenReturn(httpSender);

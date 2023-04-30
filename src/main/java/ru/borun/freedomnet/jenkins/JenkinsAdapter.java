@@ -36,7 +36,7 @@ public class JenkinsAdapter {
     public JobData getJobData(String jobUri)
             throws IOException, InterruptedException, InvalidHttpStatusCode {
         log.debug("Get job data from Jenkins...");
-        var url = String.format("%s/%s/api/json", jenkinsConfig.getUrl(), jobUri);
+        var url = "%s/%s/api/json".formatted(jenkinsConfig.getUrl(), jobUri);
         var jobData = HttpSender.newHttpSender()
                 .url(url)
                 .auth(auth)
@@ -57,7 +57,7 @@ public class JenkinsAdapter {
                 jobUri, pars
         );
         HttpSender.newHttpSender()
-                .url(String.format("%s/%s/buildWithParameters", jenkinsConfig.getUrl(), jobUri))
+                .url("%s/%s/buildWithParameters".formatted(jenkinsConfig.getUrl(), jobUri))
                 .auth(auth)
                 .queryParams(pars)
                 .build()
@@ -68,7 +68,7 @@ public class JenkinsAdapter {
     public BuildData updateBuild(BuildData buildData)
             throws IOException, InterruptedException, InvalidHttpStatusCode {
         log.debug("Updating build %s ...".formatted(buildData.getUrl()));
-        var url = String.format("%s/api/json", buildData.getUrl());
+        var url = "%s/api/json".formatted(buildData.getUrl());
         var updatedBuildData = HttpSender.newHttpSender()
                 .url(url)
                 .auth(auth)
@@ -81,7 +81,7 @@ public class JenkinsAdapter {
     public BuildData updateBuild(String jobUri, int buildNumber)
             throws InvalidHttpStatusCode, IOException, InterruptedException {
         log.debug("Updating build {}/{}/{} ...", jenkinsConfig.getUrl(), jobUri, buildNumber);
-        var url = String.format("%s/%s/%d/api/json", jenkinsConfig.getUrl(), jobUri, buildNumber);
+        var url = "%s/%s/%d/api/json".formatted(jenkinsConfig.getUrl(), jobUri, buildNumber);
         var updatedBuildData = HttpSender.newHttpSender()
                 .url(url)
                 .auth(auth)
