@@ -1,5 +1,6 @@
 package ru.borun.freedomnet.jenkins;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import ru.borun.freedomnet.jenkins.data.BuildData;
 import ru.borun.freedomnet.jenkins.data.JobData;
@@ -14,11 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j2
+@Getter
 public class JenkinsAdapter {
 
-    private static final int UPDATE_BUILD_SUCCESS_HTTP_CODE = 200;
-    private static final int RUN_BUILD_HTTP_SUCCESS_CODE = 204;
-    private static final int GET_JOB_HTTP_SUCCESS_CODE = 200;
+    public static final int UPDATE_BUILD_SUCCESS_HTTP_CODE = 200;
+    public static final int RUN_BUILD_HTTP_SUCCESS_CODE = 204;
+    public static final int GET_JOB_HTTP_SUCCESS_CODE = 200;
 
     private final JenkinsConfig jenkinsConfig;
     private final String auth;

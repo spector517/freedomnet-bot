@@ -1,11 +1,8 @@
 package ru.borun.freedomnet.util.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.http.client.utils.URIBuilder;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
