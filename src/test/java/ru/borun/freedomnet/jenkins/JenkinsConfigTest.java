@@ -3,11 +3,10 @@ package ru.borun.freedomnet.jenkins;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import ru.borun.freedomnet.common.Config;
-
-import java.util.Optional;
 
 @DisplayName("Test Bot config load")
 class JenkinsConfigTest {

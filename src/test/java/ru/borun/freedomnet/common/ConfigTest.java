@@ -3,7 +3,6 @@ package ru.borun.freedomnet.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Test config load")
 class ConfigTest {
@@ -37,22 +39,19 @@ class ConfigTest {
     @SneakyThrows
     void testReadSuccess(String prefix) {
         var expectedConfig = all_config.get(prefix);
-        Assertions.assertEquals(expectedConfig, Config.readConfigMap(CONFIG_PATH, prefix).get());
+        assertEquals(expectedConfig, Config.readConfigMap(CONFIG_PATH, prefix).get());
     }
 
     @Test
     @DisplayName("Test wrong resource path")
     void testResourceNull() {
-        Assertions.assertThrows(
-                IOException.class,
-                () -> Config.readConfigMap(WRONG_CONFIG_PATH, "jenkins")
-        );
+        assertThrows(IOException.class, () -> Config.readConfigMap(WRONG_CONFIG_PATH, "jenkins"));
     }
 
     @Test
     @DisplayName("Test wrong prefix")
     @SneakyThrows
     void testWrongPrefix() {
-        Assertions.assertEquals(Optional.empty(), Config.readConfigMap(CONFIG_PATH, "wrong"));
+        assertEquals(Optional.empty(), Config.readConfigMap(CONFIG_PATH, "wrong"));
     }
 }

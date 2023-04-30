@@ -2,11 +2,11 @@ package ru.borun.freedomnet.bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import ru.borun.freedomnet.common.Config;
 
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Test Bot config load")
 class BotConfigTest {
@@ -22,6 +22,6 @@ class BotConfigTest {
                 Config.readConfigMap(CONFIG_PATH, CONFIG_PREFIX).get(),
                 BotConfig.class
         );
-        Assertions.assertEquals(expectedBotConfig, BotConfig.getInstance());
+        assertEquals(expectedBotConfig, BotConfig.getInstance());
     }
 }

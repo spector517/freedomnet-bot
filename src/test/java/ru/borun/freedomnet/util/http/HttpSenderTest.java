@@ -2,6 +2,7 @@ package ru.borun.freedomnet.util.http;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -19,9 +20,11 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
+@DisplayName("Test HTTP sender")
 class HttpSenderTest {
 
     @Test
+    @DisplayName("Test with body serialization")
     @SneakyThrows
     void testSendRequest_bodySerialization() {
         var httpSenderMock = mock(HttpSender.class);
@@ -33,6 +36,7 @@ class HttpSenderTest {
     }
 
     @Test
+    @DisplayName("Test with body serialization and custom response codes")
     @SneakyThrows
     void testSendRequest_bodySerializationAndCustomRespCodes() {
         var httpSenderMock = mock(HttpSender.class);
@@ -45,6 +49,7 @@ class HttpSenderTest {
     }
 
     @Test
+    @DisplayName("Test with no input arguments")
     @SneakyThrows
     void testSendRequest_noArgs() {
         var httpSenderMock = mock(HttpSender.class);
@@ -94,6 +99,7 @@ class HttpSenderTest {
     }
 
     @Test
+    @DisplayName("Test with no input query parameters, headers, auth and method")
     @SneakyThrows
     void testSendRequest_noQuery_noHeaders_noAuth_noMethod() {
         var url = "https://google.com/";
@@ -109,6 +115,7 @@ class HttpSenderTest {
     }
 
     @Test
+    @DisplayName("Test with input 'GET' method and no headers, no query parameters and no auth")
     @SneakyThrows
     void testSendRequest_noQuery_noHeaders_noAuth_forceGetMethod() {
         var url = "https://google.com/";
@@ -123,6 +130,7 @@ class HttpSenderTest {
     }
 
     @Test
+    @DisplayName("Test with query parameters headers, auth and no input method")
     @SneakyThrows
     void testSendRequest_withQuery_withHeaders_withAuth_withMethod() {
         var url = "https://ya.ru/";
@@ -153,6 +161,7 @@ class HttpSenderTest {
     }
 
     @Test
+    @DisplayName("Test if returned invalid response code")
     @SneakyThrows
     void testSendRequest_invalidResponseCode() {
         var url = "https://microsoft.com/";
