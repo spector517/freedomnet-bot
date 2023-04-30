@@ -1,7 +1,6 @@
 package ru.borun.freedomnet.util.http;
 
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Test HTTP sender")
@@ -32,7 +32,7 @@ class HttpSenderTest {
         var expectedResult = Map.of("test", "qwe123");
         when(httpSenderMock.sendRequest(HttpSender.VALID_RESPONSE_CODES)).thenReturn(testResponse);
         when(httpSenderMock.sendRequest(Map.class)).thenCallRealMethod();
-        Assertions.assertEquals(expectedResult, httpSenderMock.sendRequest(Map.class));
+        assertEquals(expectedResult, httpSenderMock.sendRequest(Map.class));
     }
 
     @Test
@@ -45,7 +45,7 @@ class HttpSenderTest {
         var expectedResponseCodes = List.of(200, 300, 400, 500);
         when(httpSenderMock.sendRequest(expectedResponseCodes)).thenReturn(testResponse);
         when(httpSenderMock.sendRequest(Map.class, expectedResponseCodes)).thenCallRealMethod();
-        Assertions.assertEquals(expectedResult, httpSenderMock.sendRequest(Map.class, expectedResponseCodes));
+        assertEquals(expectedResult, httpSenderMock.sendRequest(Map.class, expectedResponseCodes));
     }
 
     @Test
@@ -56,7 +56,7 @@ class HttpSenderTest {
         var testResponse = "{\"test\": \"qwe123\"}".getBytes(StandardCharsets.UTF_8);
         when(httpSenderMock.sendRequest(HttpSender.VALID_RESPONSE_CODES)).thenReturn(testResponse);
         when(httpSenderMock.sendRequest()).thenCallRealMethod();
-        Assertions.assertArrayEquals(testResponse, httpSenderMock.sendRequest());
+        assertArrayEquals(testResponse, httpSenderMock.sendRequest());
     }
 
     private void testWithMockedHttpClient(
@@ -70,18 +70,18 @@ class HttpSenderTest {
             when(httpClientMock.send(httpReqCaptor.capture(), eq(HttpResponse.BodyHandlers.ofByteArray())))
                     .thenReturn(httpResponse);
             httpSender.sendRequest(HttpSender.VALID_RESPONSE_CODES);
-            Assertions.assertEquals(expectedHttpRequest.uri().getScheme(), httpReqCaptor.getValue().uri().getScheme());
-            Assertions.assertEquals(expectedHttpRequest.uri().getPath(), httpReqCaptor.getValue().uri().getPath());
+            assertEquals(expectedHttpRequest.uri().getScheme(), httpReqCaptor.getValue().uri().getScheme());
+            assertEquals(expectedHttpRequest.uri().getPath(), httpReqCaptor.getValue().uri().getPath());
             if (expectedHttpRequest.uri().getQuery() != null) {
-                Assertions.assertEquals(
+                assertEquals(
                         toQueryMap(expectedHttpRequest.uri().getQuery()),
                         toQueryMap(httpReqCaptor.getValue().uri().getQuery())
                 );
             }
-            Assertions.assertEquals(expectedHttpRequest.headers(), httpReqCaptor.getValue().headers());
-            Assertions.assertEquals(expectedHttpRequest.method(), httpReqCaptor.getValue().method());
+            assertEquals(expectedHttpRequest.headers(), httpReqCaptor.getValue().headers());
+            assertEquals(expectedHttpRequest.method(), httpReqCaptor.getValue().method());
             expectedHttpRequest.bodyPublisher().ifPresent(value ->
-                    Assertions.assertEquals(
+                    assertEquals(
                             value.contentLength(),
                             httpReqCaptor.getValue().bodyPublisher().get().contentLength()
                     )
@@ -172,7 +172,7 @@ class HttpSenderTest {
                 .url(url)
                 .build();
         var httpResponse = new TestHttpResponse("test".getBytes(StandardCharsets.UTF_8), 500);
-        Assertions.assertThrows(InvalidHttpStatusCode.class, () ->
+        assertThrows(InvalidHttpStatusCode.class, () ->
             testWithMockedHttpClient(expectedHttpRequest, httpSender, httpResponse)
         );
     }

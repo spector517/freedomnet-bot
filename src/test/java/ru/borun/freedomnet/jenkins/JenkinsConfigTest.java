@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.borun.freedomnet.common.Config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @DisplayName("Test Bot config load")
 class JenkinsConfigTest {
 
@@ -22,6 +24,6 @@ class JenkinsConfigTest {
                 Config.readConfigMap(CONFIG_PATH, CONFIG_PREFIX).get(),
                 JenkinsConfig.class
         );
-        Assertions.assertEquals(expectedJenkinsConfig, JenkinsConfig.getInstance());
+        assertEquals(expectedJenkinsConfig, JenkinsConfig.getInstance());
     }
 }
