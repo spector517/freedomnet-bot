@@ -2,6 +2,7 @@ package ru.borun.freedomnet.jenkins;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import ru.borun.freedomnet.jenkins.data.ArtifactData;
 import ru.borun.freedomnet.jenkins.data.BuildData;
 import ru.borun.freedomnet.jenkins.data.JobData;
 import ru.borun.freedomnet.util.http.HttpSender;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Log4j2
 @Getter
-public class JenkinsAdapter {
+public class JenkinsAdapter implements IJenkinsAdapter{
 
     public static final int UPDATE_BUILD_SUCCESS_HTTP_CODE = 200;
     public static final int RUN_BUILD_HTTP_SUCCESS_CODE = 204;
@@ -33,6 +34,7 @@ public class JenkinsAdapter {
         );
     }
 
+    @Override
     public JobData getJobData(String jobUri)
             throws IOException, InterruptedException, InvalidHttpStatusCode {
         log.debug("Get job data from Jenkins...");
@@ -46,6 +48,7 @@ public class JenkinsAdapter {
         return jobData;
     }
 
+    @Override
     public void runBuild(String jobUri, String jobToken, Map<String, String> params)
             throws IOException, InterruptedException, InvalidHttpStatusCode {
         var pars = new LinkedHashMap<>(params);
@@ -65,6 +68,7 @@ public class JenkinsAdapter {
         log.debug("Build started.");
     }
 
+    @Override
     public BuildData updateBuild(BuildData buildData)
             throws IOException, InterruptedException, InvalidHttpStatusCode {
         log.debug("Updating build %s ...".formatted(buildData.getUrl()));
@@ -78,6 +82,7 @@ public class JenkinsAdapter {
         return updatedBuildData;
     }
 
+    @Override
     public BuildData updateBuild(String jobUri, int buildNumber)
             throws InvalidHttpStatusCode, IOException, InterruptedException {
         log.debug("Updating build {}/{}/{} ...", jenkinsConfig.getUrl(), jobUri, buildNumber);
@@ -89,5 +94,22 @@ public class JenkinsAdapter {
                 .sendRequest(BuildData.class, List.of(UPDATE_BUILD_SUCCESS_HTTP_CODE));
         log.debug("Build updated.");
         return updatedBuildData;
+    }
+
+    @Override
+    public byte[] downloadArtifact(BuildData buildData, ArtifactData artifactData)
+            throws IOException, InterruptedException, InvalidHttpStatusCode {
+        log.debug(
+                "Download artifact {} of build {} ...",
+                artifactData.getRelativePath(), buildData.getUrl()
+        );
+        var url = "%s/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());
+        var artifactBytes = HttpSender.newHttpSender()
+                .url(url)
+                .auth(auth)
+                .build()
+                .sendRequest();
+        log.debug("Artifact downloaded.");
+        return artifactBytes;
     }
 }

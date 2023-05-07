@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.borun.freedomnet.jenkins.data.ArtifactData;
 import ru.borun.freedomnet.jenkins.data.BuildData;
 import ru.borun.freedomnet.util.http.HttpSender;
 
@@ -114,6 +115,27 @@ class JenkinsAdapterTest {
             when(httpSenderBuilder.build()).thenReturn(httpSender);
 
             jenkinsAdapter.updateBuild(jobUri, buildNumber);
+
+            verify(httpSenderBuilder, times(1)).url(expectedUrl);
+            verify(httpSenderBuilder, times(1)).auth(jenkinsAdapter.getAuth());
+        }
+    }
+
+    @Test
+    @DisplayName("Test download artifact")
+    @SneakyThrows
+    void downloadArtifact() {
+        assert jenkinsConfig != null;
+        var buildData = new BuildData();
+        buildData.setUrl("http://joburl");
+        var artifactData = new ArtifactData();
+        artifactData.setRelativePath("test/artifact.file");
+        var expectedUrl = "%s/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());
+        try (var staticHttpSender = mockStatic(HttpSender.class)) {
+            staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
+            when(httpSenderBuilder.build()).thenReturn(httpSender);
+
+            jenkinsAdapter.downloadArtifact(buildData, artifactData);
 
             verify(httpSenderBuilder, times(1)).url(expectedUrl);
             verify(httpSenderBuilder, times(1)).auth(jenkinsAdapter.getAuth());
