@@ -14,6 +14,7 @@ public class BotConfig extends Config {
     private static final BotConfig INSTANCE = getInstance();
     private static final String CONFIG_RESOURCE_PATH = "config.yaml";
     private static final String CONFIG_PREFIX = "bot";
+    private String name;
     private String token;
 
     @SneakyThrows

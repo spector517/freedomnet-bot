@@ -1,4 +1,4 @@
-package ru.borun.freedomnet.bot;
+package ru.borun.freedomnet.bot.data;
 
 public enum ClientLang {
     RU,

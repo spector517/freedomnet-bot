@@ -24,7 +24,7 @@ public class JenkinsConfig extends Config {
     @JsonProperty(value = "wireguard_deploy_job") private Job wireguardDeployJob;
 
     @JsonProperty(value = "polling_interval") private long pollingInterval;
-    @JsonProperty(value = "waiting_build_max_timeout") private long waitingBuildMaxTimeout;
+    @JsonProperty(value = "build_processing_ttl") private int buildProcessingTtl;
 
     @Getter
     @EqualsAndHashCode

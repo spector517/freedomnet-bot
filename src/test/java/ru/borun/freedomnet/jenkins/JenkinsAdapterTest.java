@@ -88,8 +88,10 @@ class JenkinsAdapterTest {
     @SneakyThrows
     void testUpdateBuild_buildData() {
         assert jenkinsConfig != null;
-        var buildData = new BuildData();
-        buildData.setUrl("http://joburl");
+        var buildData = BuildData
+                .builder()
+                .url("http://joburl")
+                .build();
         var expectedUrl = "%s/api/json".formatted(buildData.getUrl());
         try (var staticHttpSender = mockStatic(HttpSender.class)) {
             staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
@@ -126,8 +128,10 @@ class JenkinsAdapterTest {
     @SneakyThrows
     void downloadArtifact() {
         assert jenkinsConfig != null;
-        var buildData = new BuildData();
-        buildData.setUrl("http://joburl");
+        var buildData = BuildData
+                .builder()
+                .url("http://joburl")
+                .build();
         var artifactData = new ArtifactData();
         artifactData.setRelativePath("test/artifact.file");
         var expectedUrl = "%s/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());

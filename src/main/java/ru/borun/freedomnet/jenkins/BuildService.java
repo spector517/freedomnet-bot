@@ -9,51 +9,50 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Log4j2
 public class BuildService implements Runnable {
 
-    private final Queue<Build> processingBuilds;
-    private final Queue<Build> finishedBuilds;
+    private final Queue<Build> processingBuildsQueue;
+    private final Queue<Build> finishedBuildsQueue;
     private final JenkinsConfig jenkinsConfig;
-    private final JenkinsAdapter jenkinsAdapter;
-    private boolean stopped;
 
     public BuildService(JenkinsConfig jenkinsConfig) {
-        processingBuilds = new ConcurrentLinkedQueue<>();
-        finishedBuilds = new ConcurrentLinkedQueue<>();
-        jenkinsAdapter = new JenkinsAdapter(jenkinsConfig);
+        this.processingBuildsQueue = new ConcurrentLinkedQueue<>();
+        this.finishedBuildsQueue = new ConcurrentLinkedQueue<>();
         this.jenkinsConfig = jenkinsConfig;
     }
 
     public void addBuildToProcessing(Build build) {
         log.info("Add build for client ({}) to processing", build.getClientData().getClientId());
-        processingBuilds.add(build);
+        processingBuildsQueue.add(build);
     }
 
     public Build getFinishedBuild() {
-        return finishedBuilds.poll();
-    }
-
-    public void stop() {
-        log.info("Stopping build service...");
-        stopped = true;
+        return finishedBuildsQueue.poll();
     }
 
     @SneakyThrows
     @Override
     public void run() {
-        while (!stopped) {
+        while (!Thread.interrupted()) {
             log.debug("Sleeping for {} sec", jenkinsConfig.getPollingInterval() / 1000);
             Thread.sleep(jenkinsConfig.getPollingInterval());
-            var build = processingBuilds.poll();
+            var build = processingBuildsQueue.poll();
             if (build == null) {
                 continue;
             }
-            build.setBuildData(jenkinsAdapter.updateBuild(build.getBuildData()));
-            if (build.getBuildData().getResult() == null) {
-                processingBuilds.add(build);
+            if (!build.isStarted()) {
+                build.start();
             } else {
-                finishedBuilds.add(build);
-                log.info("Build for client ({}) processed.", build.getClientData().getClientId());
+                build.update();
+                if (build.getBuildData() == null || (build.getBuildData().isInProgress() && !build.isExpired())) {
+                    processingBuildsQueue.add(build);
+                } else {
+                    finishedBuildsQueue.add(build);
+                    if (build.isExpired()) {
+                        log.warn("Build for client ({}) is expired.", build.getClientData().getClientId());
+                    } else {
+                        log.info("Build for client ({}) is processed.", build.getClientData().getClientId());
+                    }
+                }
             }
         }
-        log.info("Build service stopped.");
     }
 }
