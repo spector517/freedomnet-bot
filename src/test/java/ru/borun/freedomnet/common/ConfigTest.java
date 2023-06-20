@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -19,18 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("Test config load")
 class ConfigTest {
 
-    private static final String CONFIG_PATH = "config.yaml";
-    private static final String WRONG_CONFIG_PATH = "wrong_config.yaml";
+    private static final String CONFIG_PATH = "configs/sample_config.yaml";
+    private static final String WRONG_CONFIG_PATH = "configs/wrong_config.yaml";
     private static Map all_config;
 
     @BeforeAll
     @SneakyThrows
     static void initAll() {
         var objectMapper = new ObjectMapper(new YAMLFactory());
-        all_config = objectMapper.readValue(
-                ConfigTest.class.getClassLoader().getResourceAsStream(CONFIG_PATH),
-                Map.class
-        );
+        all_config = objectMapper.readValue(new FileInputStream(CONFIG_PATH), Map.class);
     }
 
     @ParameterizedTest
@@ -45,7 +44,9 @@ class ConfigTest {
     @Test
     @DisplayName("Test wrong resource path")
     void testResourceNull() {
-        assertThrows(IOException.class, () -> Config.readConfigMap(WRONG_CONFIG_PATH, "jenkins"));
+        assertThrows(FileNotFoundException.class, () ->
+                Config.readConfigMap(WRONG_CONFIG_PATH, "jenkins")
+        );
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import ru.borun.freedomnet.common.Config;
+import ru.borun.freedomnet.common.ConfigLoadException;
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -11,28 +12,33 @@ import ru.borun.freedomnet.common.Config;
 @EqualsAndHashCode(callSuper = false)
 public class BotConfig extends Config {
 
-    private static final BotConfig INSTANCE = getInstance();
-    private static final String CONFIG_RESOURCE_PATH = "config.yaml";
     private static final String CONFIG_PREFIX = "bot";
+    private static BotConfig instance;
     private String name;
     private String token;
 
     @SneakyThrows
-    public static BotConfig getInstance() {
-        if (INSTANCE != null) {
-            return INSTANCE;
+    public static void load(String configFilePath) {
+        log.info("Loading Bot config...");
+        var configMap = readConfigMap(configFilePath, CONFIG_PREFIX);
+        if (configMap.isPresent()) {
+            var config = new ObjectMapper().convertValue(configMap.get(), BotConfig.class);
+            log.info("Bot config loaded.");
+            instance = config;
         } else {
-            log.info("Getting Bot config...");
-            var configMap = readConfigMap(CONFIG_RESOURCE_PATH, CONFIG_PREFIX);
-            if (configMap.isPresent()) {
-                var config = new ObjectMapper().convertValue(configMap.get(), BotConfig.class);
-                log.info("Bot config gotten.");
-                return config;
-            } else {
-                var message = "Bot config is empty.";
-                log.fatal(message);
-                return null;
-            }
+            var message = "Bot config is empty.";
+            log.fatal(message);
+            throw new ConfigLoadException(message);
         }
+    }
+
+    @SneakyThrows
+    public static BotConfig getInstance() {
+        if (instance == null) {
+            var message = "Bot config is empty.";
+            log.fatal(message);
+            throw new ConfigLoadException(message);
+        }
+        return instance;
     }
 }
