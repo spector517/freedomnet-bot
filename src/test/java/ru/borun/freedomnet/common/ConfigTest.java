@@ -27,7 +27,7 @@ class ConfigTest {
 
     @BeforeAll
     @SneakyThrows
-    static void initAll() {
+    static void init() {
         var objectMapper = new ObjectMapper(new YAMLFactory());
         all_config = objectMapper.readValue(new FileInputStream(CONFIG_PATH), Map.class);
     }

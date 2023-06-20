@@ -17,7 +17,7 @@ class JenkinsConfigTest {
     private static final String CONFIG_PREFIX = "jenkins";
 
     @BeforeAll
-    static void setUp() {
+    static void init() {
         JenkinsConfig.load(CONFIG_PATH);
     }
 

@@ -1,6 +1,7 @@
 package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Test build create/update/expire")
 class BuildTest {
+
+    private static final String CONFIG_PATH = "configs/sample_config.yaml";
 
     private JenkinsConfig jenkinsConfig;
     private IJenkinsAdapter jenkinsAdapter;
@@ -23,6 +27,11 @@ class BuildTest {
     private ClientData clientData;
     private JobData jobData;
     private BuildData buildData;
+
+    @BeforeAll
+    static void init() {
+        JenkinsConfig.load(CONFIG_PATH);
+    }
 
     @BeforeEach
     @SneakyThrows

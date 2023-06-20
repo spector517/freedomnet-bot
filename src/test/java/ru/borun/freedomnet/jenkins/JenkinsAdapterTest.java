@@ -1,6 +1,7 @@
 package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,17 @@ import static org.mockito.Mockito.*;
 @DisplayName("Test Jenkins adapter")
 class JenkinsAdapterTest {
 
-    private JenkinsConfig jenkinsConfig;
+    private static final String CONFIG_PATH = "configs/sample_config.yaml";
 
+    private JenkinsConfig jenkinsConfig;
     private HttpSender.HttpSenderBuilder httpSenderBuilder;
     private HttpSender httpSender;
     private JenkinsAdapter jenkinsAdapter;
+
+    @BeforeAll
+    static void init() {
+        JenkinsConfig.load(CONFIG_PATH);
+    }
 
     @BeforeEach
     void setUp() {

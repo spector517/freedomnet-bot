@@ -1,10 +1,7 @@
 package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.borun.freedomnet.bot.data.ClientData;
 import ru.borun.freedomnet.bot.data.ClientLang;
 import ru.borun.freedomnet.jenkins.data.BuildData;
@@ -15,13 +12,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Test build processing service")
 class BuildServiceTest {
+
+    private static final String CONFIG_PATH = "configs/sample_config.yaml";
 
     private JenkinsConfig jenkinsConfig;
     private BuildService buildService;
     private Thread serviceThread;
 
     private Build build;
+
+    @BeforeAll
+    static void init() {
+        JenkinsConfig.load(CONFIG_PATH);
+    }
 
     @BeforeEach
     void setUp() {

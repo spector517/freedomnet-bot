@@ -16,7 +16,7 @@ class BotConfigTest {
     private static final String CONFIG_PREFIX = "bot";
 
     @BeforeAll
-    static void setUp() {
+    static void init() {
         BotConfig.load(CONFIG_PATH);
     }
 
