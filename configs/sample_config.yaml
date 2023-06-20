@@ -1,5 +1,5 @@
 jenkins:
-  url: https://jenkins.borun.ru
+  url: https://jenkins.yourdomain.com
   username: your_name
   token: your_secret_token
   polling_interval: 1_000
