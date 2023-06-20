@@ -14,8 +14,8 @@ public class BuildService implements Runnable {
     private final JenkinsConfig jenkinsConfig;
 
     public BuildService(JenkinsConfig jenkinsConfig) {
-        this.processingBuildsQueue = new ConcurrentLinkedQueue<>();
-        this.finishedBuildsQueue = new ConcurrentLinkedQueue<>();
+        processingBuildsQueue = new ConcurrentLinkedQueue<>();
+        finishedBuildsQueue = new ConcurrentLinkedQueue<>();
         this.jenkinsConfig = jenkinsConfig;
     }
 

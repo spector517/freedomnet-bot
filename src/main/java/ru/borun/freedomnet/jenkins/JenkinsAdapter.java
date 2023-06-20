@@ -28,7 +28,7 @@ public class JenkinsAdapter implements IJenkinsAdapter{
 
     public JenkinsAdapter(JenkinsConfig jenkinsConfig) {
         this.jenkinsConfig = jenkinsConfig;
-        this.auth = "Basic + " + Base64.getEncoder().encodeToString(
+        auth = "Basic + " + Base64.getEncoder().encodeToString(
                 "%s:%s".formatted(jenkinsConfig.getUsername(), jenkinsConfig.getToken()
                 ).getBytes(StandardCharsets.UTF_8)
         );

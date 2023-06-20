@@ -33,38 +33,38 @@ public class Build {
         this.params = params;
         this.jenkinsAdapter = jenkinsAdapter;
         this.jenkinsConfig = jenkinsConfig;
-        this.processingTtl = jenkinsConfig.getBuildProcessingTtl();
+        processingTtl = jenkinsConfig.getBuildProcessingTtl();
     }
 
     public void start() throws InterruptedException, InvalidHttpStatusCode, IOException {
-        this.jobData = jenkinsAdapter.getJobData(job.getUri());
-        this.jenkinsAdapter.runBuild(this.job.getUri(), this.job.getToken(), this.params);
-        this.started = true;
-        this.updateExpired();
+        jobData = jenkinsAdapter.getJobData(job.getUri());
+        jenkinsAdapter.runBuild(job.getUri(), job.getToken(), params);
+        started = true;
+        updateExpired();
     }
 
     public void update() throws InvalidHttpStatusCode, IOException, InterruptedException {
-        if (this.buildData != null) {
-            this.buildData = this.jenkinsAdapter.updateBuild(buildData);
+        if (buildData != null) {
+            buildData = jenkinsAdapter.updateBuild(buildData);
         } else {
             try {
-                this.buildData = this.jenkinsAdapter.updateBuild(this.job.getUri(), this.jobData.getNextBuildNumber());
+                buildData = jenkinsAdapter.updateBuild(job.getUri(), jobData.getNextBuildNumber());
             } catch (InvalidHttpStatusCode ex) {
                 log.debug(
                         "Build {}/{}/{} not found",
-                        this.jenkinsConfig.getUrl(),
-                        this.job.getUri(),
-                        this.jobData.getNextBuildNumber()
+                        jenkinsConfig.getUrl(),
+                        job.getUri(),
+                        jobData.getNextBuildNumber()
                 );
             }
         }
-        this.updateExpired();
+        updateExpired();
     }
 
     private void updateExpired() {
-        this.processingTtl--;
-        if (this.processingTtl <= 0) {
-            this.expired = true;
+        processingTtl--;
+        if (processingTtl <= 0) {
+            expired = true;
         }
     }
 }
