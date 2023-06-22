@@ -2,7 +2,6 @@ package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import ru.borun.freedomnet.jenkins.data.BuildResults;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -49,21 +48,22 @@ public class BuildService implements Runnable {
                 if (build.getBuildData() == null || (build.getBuildData().isInProgress() && !build.isExpired())) {
                     processingBuildsQueue.add(build);
                 } else {
-                    finishedBuildsQueue.add(build);
-                    if (build.isExpired()) {
-                        log.warn("Build for client '{}' is expired.", build.getClientData().getClientId());
-                    } else {
-                        log.info("Build for client '{}' is processed.", build.getClientData().getClientId());
-                        if (build.getBuildData().getResult() != BuildResults.SUCCESS) {
-                            log.warn(
-                                    "Result of build for client '{}' is '{}'",
-                                    build.getClientData().getClientId(),
-                                    build.getBuildData().getResult()
-                            );
-                        }
-                    }
+                    finishBuildProcessing(build);
                 }
             }
+        }
+    }
+
+    private void finishBuildProcessing(Build build) {
+        finishedBuildsQueue.add(build);
+        if (build.isExpired()) {
+            log.warn("Build for client '{}' is expired.", build.getClientData().getClientId());
+        } else {
+            log.info(
+                    "Build for client '{}' is processed. Result is '{}'",
+                    build.getClientData().getClientId(),
+                    build.getBuildData().getResult()
+            );
         }
     }
 }

@@ -22,9 +22,8 @@ public class BotConfig extends Config {
         log.info("Loading Bot config...");
         var configMap = readConfigMap(configFilePath, CONFIG_PREFIX);
         if (configMap.isPresent()) {
-            var config = new ObjectMapper().convertValue(configMap.get(), BotConfig.class);
+            instance = new ObjectMapper().convertValue(configMap.get(), BotConfig.class);
             log.info("Bot config loaded.");
-            instance = config;
         } else {
             var message = "Bot config is empty.";
             log.fatal(message);

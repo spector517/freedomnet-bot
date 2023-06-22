@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Log4j2
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Config {
     public static Optional<Object> readConfigMap(String configFilePath, String prefix) throws IOException {
         var objectMapper = new ObjectMapper(new YAMLFactory());

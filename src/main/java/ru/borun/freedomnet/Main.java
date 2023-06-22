@@ -26,7 +26,7 @@ public class Main {
         SSLConfig.load(args[0]);
         BotConfig.load(args[0]);
         applySslConfig(SSLConfig.getInstance());
-        var buildService = startBuildService(JenkinsConfig.getInstance());
+        startBuildService(JenkinsConfig.getInstance());
     }
 
     private static BuildService startBuildService(JenkinsConfig jenkinsConfig) {
@@ -46,10 +46,9 @@ public class Main {
         }
         try {
             var keystore = KeyStore.getInstance("JKS");
-            keystore.load(
-                    new FileInputStream(sslConfig.getKeystorePath()),
-                    sslConfig.getKeystorePassword().toCharArray()
-            );
+            try(var fileInputStream = new FileInputStream(sslConfig.getKeystorePath())) {
+                keystore.load(fileInputStream, sslConfig.getKeystorePassword().toCharArray());
+            }
 
             var trustManagerFactory = TrustManagerFactory.getInstance(
                     TrustManagerFactory.getDefaultAlgorithm()

@@ -22,9 +22,8 @@ public class SSLConfig extends Config {
         log.info("Loading SSL config...");
         var configMap = readConfigMap(configFilePath, CONFIG_PREFIX);
         if (configMap.isPresent()) {
-            var config = new ObjectMapper().convertValue(configMap.get(), SSLConfig.class);
+            instance = new ObjectMapper().convertValue(configMap.get(), SSLConfig.class);
             log.info("SSL config loaded.");
-            instance = config;
         } else {
             var message = "SSL config is empty.";
             log.fatal(message);

@@ -36,9 +36,8 @@ public class JenkinsConfig extends Config {
         log.info("Loading Jenkins config...");
         var configMap = readConfigMap(configFilePath, CONFIG_PREFIX);
         if (configMap.isPresent()) {
-            var config = new ObjectMapper().convertValue(configMap.get(), JenkinsConfig.class);
+            instance = new ObjectMapper().convertValue(configMap.get(), JenkinsConfig.class);
             log.info("Jenkins config loaded.");
-            instance = config;
         } else {
             var message = "Bot config is empty.";
             log.fatal(message);

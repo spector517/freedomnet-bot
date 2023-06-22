@@ -8,8 +8,7 @@ import ru.borun.freedomnet.jenkins.data.BuildData;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Test build processing service")
@@ -70,7 +69,8 @@ class BuildServiceTest {
                 .inProgress(false)
                 .build();
         when(build.getBuildData()).thenReturn(buildData);
-        Thread.sleep(jenkinsConfig.getPollingInterval() * 2);
-        assertEquals(build, buildService.getFinishedBuild());
+        await().atMost(Duration.ofMillis(jenkinsConfig.getPollingInterval() * 2)).until(() ->
+                build.equals(buildService.getFinishedBuild())
+        );
     }
 }
