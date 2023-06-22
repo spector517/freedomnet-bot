@@ -52,38 +52,24 @@ class BuildServiceTest {
     }
 
     @Test
-    @DisplayName("Test start build processing")
+    @DisplayName("Complex build processing test")
     @SneakyThrows
-    void startBuildProcessing() {
+    void complexBuildProcessing() {
         when(build.isStarted()).thenReturn(false);
         buildService.addBuildToProcessing(build);
         verify(build, timeout(jenkinsConfig.getPollingInterval() * 2).times(1)).start();
-    }
 
-    @Test
-    @DisplayName("Test update build processing")
-    @SneakyThrows
-    void updateBuildProcessing() {
-        buildService.addBuildToProcessing(build);
         when(build.isStarted()).thenReturn(true);
         var buildData = BuildData.builder()
                 .inProgress(true)
                 .build();
         when(build.getBuildData()).thenReturn(buildData);
         verify(build, timeout(jenkinsConfig.getPollingInterval() * 2).times(1)).update();
-    }
 
-    @Test
-    @DisplayName("Test finish build processing")
-    @SneakyThrows
-    void finishBuildProcessing() {
-        buildService.addBuildToProcessing(build);
-        when(build.isStarted()).thenReturn(true);
-        var buildData = BuildData.builder()
+        buildData = BuildData.builder()
                 .inProgress(false)
                 .build();
         when(build.getBuildData()).thenReturn(buildData);
-        verify(build, timeout(jenkinsConfig.getPollingInterval() * 2).times(1)).update();
         Thread.sleep(jenkinsConfig.getPollingInterval() * 2);
         assertEquals(build, buildService.getFinishedBuild());
     }
