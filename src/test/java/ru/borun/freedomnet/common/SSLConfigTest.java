@@ -1,34 +1,32 @@
-package ru.borun.freedomnet.jenkins;
-
+package ru.borun.freedomnet.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.borun.freedomnet.common.Config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Test Jenkins config load")
-class JenkinsConfigTest {
+@DisplayName("Test SSL config load")
+class SSLConfigTest {
 
     private static final String CONFIG_PATH = "configs/sample_config.yaml";
-    private static final String CONFIG_PREFIX = "jenkins";
+    private static final String CONFIG_PREFIX = "ssl";
 
     @BeforeAll
     static void init() {
-        JenkinsConfig.load(CONFIG_PATH);
+        SSLConfig.load(CONFIG_PATH);
     }
 
     @Test
-    @DisplayName("Successfully load Jenkins config")
+    @DisplayName("Successfully load SSL config")
     @SneakyThrows
     void testGetInstanceSuccess() {
-        var expectedJenkinsConfig = new ObjectMapper().convertValue(
+        var expectedSslConfig = new ObjectMapper().convertValue(
                 Config.readConfigMap(CONFIG_PATH, CONFIG_PREFIX).get(),
-                JenkinsConfig.class
+                SSLConfig.class
         );
-        assertEquals(expectedJenkinsConfig, JenkinsConfig.getInstance());
+        assertEquals(expectedSslConfig, SSLConfig.getInstance());
     }
 }

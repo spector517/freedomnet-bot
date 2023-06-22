@@ -34,7 +34,7 @@ class ConfigTest {
 
     @ParameterizedTest
     @DisplayName("Successful read scenario")
-    @ValueSource(strings = {"jenkins", "bot"})
+    @ValueSource(strings = {"jenkins", "bot", "ssl"})
     @SneakyThrows
     void testReadSuccess(String prefix) {
         var expectedConfig = all_config.get(prefix);

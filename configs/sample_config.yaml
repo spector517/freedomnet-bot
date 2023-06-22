@@ -14,6 +14,12 @@ jenkins:
     uri: /wireguard_deploy_job
     token: job_secret_token
 
+ssl:
+  ssl_enabled: yes
+  keystore_path: configs/keystore.jks
+  keystore_password: secret_password
+  key_password: secret_password
+
 bot:
   name: Bot name
   token: 7777777777:secret_token

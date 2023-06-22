@@ -2,6 +2,7 @@ package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import ru.borun.freedomnet.jenkins.data.BuildResults;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -32,24 +33,34 @@ public class BuildService implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            log.debug("Sleeping for {} sec", jenkinsConfig.getPollingInterval() / 1000);
             Thread.sleep(jenkinsConfig.getPollingInterval());
             var build = processingBuildsQueue.poll();
             if (build == null) {
+                log.debug("No build in queue, nothing to do.");
                 continue;
             }
             if (!build.isStarted()) {
+                log.debug("Start build for client '{}'", build.getClientData().getClientId());
                 build.start();
+                processingBuildsQueue.add(build);
             } else {
+                log.debug("Update build for client '{}'", build.getClientData().getClientId());
                 build.update();
                 if (build.getBuildData() == null || (build.getBuildData().isInProgress() && !build.isExpired())) {
                     processingBuildsQueue.add(build);
                 } else {
                     finishedBuildsQueue.add(build);
                     if (build.isExpired()) {
-                        log.warn("Build for client ({}) is expired.", build.getClientData().getClientId());
+                        log.warn("Build for client '{}' is expired.", build.getClientData().getClientId());
                     } else {
-                        log.info("Build for client ({}) is processed.", build.getClientData().getClientId());
+                        log.info("Build for client '{}' is processed.", build.getClientData().getClientId());
+                        if (build.getBuildData().getResult() != BuildResults.SUCCESS) {
+                            log.warn(
+                                    "Result of build for client '{}' is '{}'",
+                                    build.getClientData().getClientId(),
+                                    build.getBuildData().getResult()
+                            );
+                        }
                     }
                 }
             }
