@@ -15,7 +15,6 @@ import java.util.Map;
 @Getter
 public class Build {
 
-    private final ClientData clientData;
     private final JenkinsConfig.Job job;
     private final Map<String, String> params;
     private final JenkinsConfig jenkinsConfig;
@@ -23,16 +22,17 @@ public class Build {
     private int processingTtl;
     private JobData jobData;
     private BuildData buildData;
+    private long clientId;
     private boolean started;
     private boolean expired;
 
-    public Build(ClientData clientData, JenkinsConfig.Job job, Map<String, String> params,
-                 IJenkinsAdapter jenkinsAdapter, JenkinsConfig jenkinsConfig) {
-        this.clientData = clientData;
+    public Build(JenkinsConfig.Job job, Map<String, String> params, IJenkinsAdapter jenkinsAdapter,
+                 JenkinsConfig jenkinsConfig, long clientId) {
         this.job = job;
         this.params = params;
         this.jenkinsAdapter = jenkinsAdapter;
         this.jenkinsConfig = jenkinsConfig;
+        this.clientId = clientId;
         processingTtl = jenkinsConfig.getBuildProcessingTtl();
     }
 

@@ -32,12 +32,6 @@ class BuildServiceTest {
         jenkinsConfig = JenkinsConfig.getInstance();
         buildService = new BuildService(jenkinsConfig);
         build = mock(Build.class);
-        when(build.getClientData()).thenReturn(
-                ClientData.builder()
-                        .lang(ClientLang.RU)
-                        .clientId(100500)
-                        .build()
-        );
         serviceThread = new Thread(buildService);
         serviceThread.setName("Test build service thread");
         serviceThread.start();

@@ -24,7 +24,6 @@ class BuildTest {
     private IJenkinsAdapter jenkinsAdapter;
     private JenkinsConfig.Job job;
     private Map<String, String> params;
-    private ClientData clientData;
     private JobData jobData;
     private BuildData buildData;
 
@@ -41,10 +40,6 @@ class BuildTest {
         assert jenkinsConfig != null;
         job = jenkinsConfig.getWireguardDeployJob();
         params = Map.of("k1", "v1");
-        clientData = ClientData.builder()
-                .lang(ClientLang.RU)
-                .clientId(123123)
-                .build();
         jobData = JobData.builder()
                 .url("https://someurl")
                 .nextBuildNumber(100)
@@ -59,7 +54,7 @@ class BuildTest {
     @SneakyThrows
     void start() {
         when(jenkinsAdapter.getJobData(job.getUri())).thenReturn(jobData);
-        var build = new Build(clientData, job, params, jenkinsAdapter, jenkinsConfig);
+        var build = new Build(job, params, jenkinsAdapter, jenkinsConfig, 0);
         build.start();
         verify(jenkinsAdapter, times(1)).getJobData(job.getUri());
         verify(jenkinsAdapter, times(1))
@@ -73,7 +68,7 @@ class BuildTest {
     void update() {
         when(jenkinsAdapter.getJobData(job.getUri())).thenReturn(jobData);
         when(jenkinsAdapter.updateBuild(job.getUri(), jobData.getNextBuildNumber())).thenReturn(buildData);
-        var build = new Build(clientData, job, params, jenkinsAdapter, jenkinsConfig);
+        var build = new Build(job, params, jenkinsAdapter, jenkinsConfig, 0);
         build.start();
         build.update();
         verify(jenkinsAdapter, times(1)).updateBuild(job.getUri(), jobData.getNextBuildNumber());
@@ -88,7 +83,7 @@ class BuildTest {
         when(jenkinsAdapter.getJobData(job.getUri())).thenReturn(jobData);
         when(jenkinsAdapter.updateBuild(job.getUri(), jobData.getNextBuildNumber()))
                 .thenReturn(buildData);
-        var build = new Build(clientData, job, params, jenkinsAdapter, jenkinsConfig);
+        var build = new Build(job, params, jenkinsAdapter, jenkinsConfig, 0);
         build.start();
         int i = 0;
         while (i < jenkinsConfig.getBuildProcessingTtl() - 1) {

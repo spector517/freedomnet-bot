@@ -20,7 +20,7 @@ public class BuildService implements Runnable {
     }
 
     public void addBuildToProcessing(Build build) {
-        log.info("Add build for client ({}) to processing", build.getClientData().getClientId());
+        log.info("Add build for client ({}) to processing", build.getClientId());
         processingBuildsQueue.add(build);
     }
 
@@ -39,11 +39,11 @@ public class BuildService implements Runnable {
                 continue;
             }
             if (!build.isStarted()) {
-                log.debug("Start build for client '{}'", build.getClientData().getClientId());
+                log.debug("Start build for client '{}'", build.getClientId());
                 build.start();
                 processingBuildsQueue.add(build);
             } else {
-                log.debug("Update build for client '{}'", build.getClientData().getClientId());
+                log.debug("Update build for client '{}'", build.getClientId());
                 build.update();
                 if (build.getBuildData() == null || (build.getBuildData().isInProgress() && !build.isExpired())) {
                     processingBuildsQueue.add(build);
@@ -57,11 +57,11 @@ public class BuildService implements Runnable {
     private void finishBuildProcessing(Build build) {
         finishedBuildsQueue.add(build);
         if (build.isExpired()) {
-            log.warn("Build for client '{}' is expired.", build.getClientData().getClientId());
+            log.warn("Build for client '{}' is expired.", build.getClientId());
         } else {
             log.info(
                     "Build for client '{}' is processed. Result is '{}'",
-                    build.getClientData().getClientId(),
+                    build.getClientId(),
                     build.getBuildData().getResult()
             );
         }
