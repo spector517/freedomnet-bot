@@ -26,11 +26,11 @@ public class Main {
         SSLConfig.load(args[0]);
         BotConfig.load(args[0]);
         applySslConfig(SSLConfig.getInstance());
-        startBuildService(JenkinsConfig.getInstance());
+        startBuildService();
     }
 
-    private static BuildService startBuildService(JenkinsConfig jenkinsConfig) {
-        var buildService = new BuildService(jenkinsConfig);
+    private static BuildService startBuildService() {
+        var buildService = BuildService.getInstance();
         var buildProcessingThread = new Thread(buildService);
         buildProcessingThread.setName("Build processing thread");
         buildProcessingThread.start();

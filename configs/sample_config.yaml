@@ -4,12 +4,6 @@ jenkins:
   token: your_secret_token
   polling_interval: 1_000
   build_processing_ttl: 100
-  proxy_deploy_job:
-    uri: /proxy_deploy_job/url
-    token: job_secret_token
-  openvpn_deploy_job:
-    uri: /openvpn_deploy_job/url
-    token: job_secret_token
   wireguard_deploy_job:
     uri: /wireguard_deploy_job
     token: job_secret_token

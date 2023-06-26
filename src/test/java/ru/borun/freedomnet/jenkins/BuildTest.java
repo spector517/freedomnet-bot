@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.borun.freedomnet.bot.data.ClientData;
-import ru.borun.freedomnet.bot.data.ClientLang;
 import ru.borun.freedomnet.jenkins.data.BuildData;
 import ru.borun.freedomnet.jenkins.data.JobData;
 

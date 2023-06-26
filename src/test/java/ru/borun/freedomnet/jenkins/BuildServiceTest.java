@@ -2,8 +2,6 @@ package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
-import ru.borun.freedomnet.bot.data.ClientData;
-import ru.borun.freedomnet.bot.data.ClientLang;
 import ru.borun.freedomnet.jenkins.data.BuildData;
 
 import java.time.Duration;
@@ -30,7 +28,7 @@ class BuildServiceTest {
     @BeforeEach
     void setUp() {
         jenkinsConfig = JenkinsConfig.getInstance();
-        buildService = new BuildService(jenkinsConfig);
+        buildService = BuildService.getInstance();
         build = mock(Build.class);
         serviceThread = new Thread(buildService);
         serviceThread.setName("Test build service thread");

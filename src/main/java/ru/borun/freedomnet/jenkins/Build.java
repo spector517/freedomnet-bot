@@ -1,9 +1,7 @@
 package ru.borun.freedomnet.jenkins;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import ru.borun.freedomnet.bot.data.ClientData;
 import ru.borun.freedomnet.jenkins.data.BuildData;
 import ru.borun.freedomnet.jenkins.data.JobData;
 import ru.borun.freedomnet.util.http.InvalidHttpStatusCode;

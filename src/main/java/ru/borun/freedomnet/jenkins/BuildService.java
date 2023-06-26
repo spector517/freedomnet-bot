@@ -9,11 +9,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Log4j2
 public class BuildService implements Runnable {
 
+    private static BuildService instance;
+
     private final Queue<Build> processingBuildsQueue;
     private final Queue<Build> finishedBuildsQueue;
     private final JenkinsConfig jenkinsConfig;
 
-    public BuildService(JenkinsConfig jenkinsConfig) {
+    public static BuildService getInstance() {
+        if (instance == null) {
+            instance = new BuildService(JenkinsConfig.getInstance());
+        }
+        return instance;
+    }
+
+    private BuildService(JenkinsConfig jenkinsConfig) {
         processingBuildsQueue = new ConcurrentLinkedQueue<>();
         finishedBuildsQueue = new ConcurrentLinkedQueue<>();
         this.jenkinsConfig = jenkinsConfig;
