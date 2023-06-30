@@ -4,7 +4,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import ru.borun.freedomnet.bot.Bot;
 import ru.borun.freedomnet.bot.BotConfig;
+import ru.borun.freedomnet.bot.ClientService;
 import ru.borun.freedomnet.common.SSLConfig;
 import ru.borun.freedomnet.jenkins.BuildService;
 import ru.borun.freedomnet.jenkins.JenkinsConfig;
@@ -27,6 +29,8 @@ public class Main {
         BotConfig.load(args[0]);
         applySslConfig(SSLConfig.getInstance());
         startBuildService();
+        startClientService();
+        Bot.getInstance().connect();
     }
 
     private static BuildService startBuildService() {
@@ -36,6 +40,15 @@ public class Main {
         buildProcessingThread.start();
         log.info("Build service started");
         return buildService;
+    }
+
+    private static ClientService startClientService() {
+        var clientService = ClientService.getInstance();
+        var clientProcessingThread = new Thread(clientService);
+        clientProcessingThread.setName("Client processing thread");
+        clientProcessingThread.start();
+        log.info("Client service started");
+        return clientService;
     }
 
     @SneakyThrows
