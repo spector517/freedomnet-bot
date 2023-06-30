@@ -26,6 +26,15 @@ public class JenkinsAdapter implements IJenkinsAdapter{
     private final JenkinsConfig jenkinsConfig;
     private final String auth;
 
+    public static JenkinsAdapter instance;
+
+    public static JenkinsAdapter getInstance() {
+        if (instance == null) {
+            instance = new JenkinsAdapter(JenkinsConfig.getInstance());
+        }
+        return instance;
+    }
+
     public JenkinsAdapter(JenkinsConfig jenkinsConfig) {
         this.jenkinsConfig = jenkinsConfig;
         auth = "Basic + " + Base64.getEncoder().encodeToString(
@@ -103,7 +112,7 @@ public class JenkinsAdapter implements IJenkinsAdapter{
                 "Download artifact {} of build {} ...",
                 artifactData.getRelativePath(), buildData.getUrl()
         );
-        var url = "%s/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());
+        var url = "%sartifact/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());
         var artifactBytes = HttpSender.newHttpSender()
                 .url(url)
                 .auth(auth)

@@ -141,7 +141,7 @@ class JenkinsAdapterTest {
                 .build();
         var artifactData = new ArtifactData();
         artifactData.setRelativePath("test/artifact.file");
-        var expectedUrl = "%s/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());
+        var expectedUrl = "%sartifact/%s".formatted(buildData.getUrl(), artifactData.getRelativePath());
         try (var staticHttpSender = mockStatic(HttpSender.class)) {
             staticHttpSender.when(HttpSender::newHttpSender).thenReturn(httpSenderBuilder);
             when(httpSenderBuilder.build()).thenReturn(httpSender);
