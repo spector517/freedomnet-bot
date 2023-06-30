@@ -2,9 +2,12 @@ package ru.borun.freedomnet.jenkins;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
+import ru.borun.freedomnet.jenkins.data.ArtifactData;
 import ru.borun.freedomnet.jenkins.data.BuildData;
+import ru.borun.freedomnet.jenkins.data.BuildResults;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
@@ -59,6 +62,8 @@ class BuildServiceTest {
 
         buildData = BuildData.builder()
                 .inProgress(false)
+                .result(BuildResults.SUCCESS)
+                .artifacts(List.of(new ArtifactData()))
                 .build();
         when(build.getBuildData()).thenReturn(buildData);
         await().atMost(Duration.ofMillis(jenkinsConfig.getPollingInterval() * 2)).until(() ->

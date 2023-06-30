@@ -44,7 +44,6 @@ public class BuildService implements Runnable {
             Thread.sleep(jenkinsConfig.getPollingInterval());
             var build = processingBuildsQueue.poll();
             if (build == null) {
-                log.debug("No build in queue, nothing to do.");
                 continue;
             }
             if (!build.isStarted()) {
@@ -54,7 +53,11 @@ public class BuildService implements Runnable {
             } else {
                 log.debug("Update build for client '{}'", build.getClientId());
                 build.update();
-                if (build.getBuildData() == null || (build.getBuildData().isInProgress() && !build.isExpired())) {
+                if (
+                        build.getBuildData() == null
+                                || (build.getBuildData().getResult() == null && !build.isExpired())
+                                || build.getBuildData().getArtifacts().isEmpty()
+                ) {
                     processingBuildsQueue.add(build);
                 } else {
                     finishBuildProcessing(build);

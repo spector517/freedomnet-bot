@@ -20,5 +20,5 @@ public class BuildData {
     private int number;
     private BuildResults result;
     private boolean inProgress;
-    private List<ArtifactData> artifactData;
+    private List<ArtifactData> artifacts;
 }
